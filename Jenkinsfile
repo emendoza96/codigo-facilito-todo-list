@@ -28,4 +28,11 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            sh 'docker stop app-todo-list'
+            sh 'docker rm app-todo-list'
+        }
+    }
 }
