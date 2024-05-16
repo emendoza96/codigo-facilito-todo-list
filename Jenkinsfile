@@ -4,7 +4,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'
         DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
         DOCKER_IMAGE_TAG = "latest"
     }
@@ -33,14 +32,10 @@ pipeline {
                 sh 'docker exec app-todo-list sh -c "npm test"'
             }
         }
-
         stage('Push to Docker Hub') {
-            steps{
-                script{
-                    withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'docker-hub-credentials')]) {
-                        sh 'docker login  -u emendoza96 -p ${docker-hub-credentials}'
-                    }
-
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     sh 'docker push ${DOCKER_HUB_REPO}'
                 }
             }
