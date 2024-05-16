@@ -3,6 +3,12 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'
+        DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
+        DOCKER_IMAGE_TAG = "latest"
+    }
+
     stages {
         stage('Verificar tools') {
             steps {
@@ -25,6 +31,16 @@ pipeline {
         stage('Run specs') {
             steps {
                 sh 'docker exec app-todo-list sh -c "npm test"'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', env.DOCKER_HUB_CREDENTIALS) {
+                        docker.image("${env.DOCKER_HUB_REPO}:${env.DOCKER_IMAGE_TAG}").push()
+                    }
+                }
             }
         }
     }
