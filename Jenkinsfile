@@ -11,7 +11,7 @@ pipeline {
     }
 
     stages {
-        stage('Set Version Tag') {
+        stage('Set prod version tag') {
             when {
                 branch 'main'
             }
@@ -21,6 +21,18 @@ pipeline {
                     VERSION = versionTag.trim().toInteger() + 1
                     VERSION_TAG = "prod-v${VERSION}"
 
+                    echo VERSION_TAG
+                }
+            }
+        }
+
+        stage('Set prod version tag') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                script {
+                    VERSION_TAG = "dev-v${BUILD_NUMBER}"
                     echo VERSION_TAG
                 }
             }
@@ -61,6 +73,9 @@ pipeline {
         }
 
         stage('Update version in repository') {
+            when {
+                branch 'main'
+            }
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh 'git config user.email "emim7802@gmail.com"'
