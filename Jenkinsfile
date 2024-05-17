@@ -17,8 +17,6 @@ pipeline {
                     versionTag = readFile 'version_prod.txt'
                     VERSION = versionTag.toInteger() + 1
                     VERSION_TAG = "prod-v${VERSION}"
-
-                    echo "${VERSION_TAG}"
                 }
             }
         }
