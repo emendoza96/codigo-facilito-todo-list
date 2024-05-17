@@ -14,11 +14,15 @@ pipeline {
         stage('Set Version Tag') {
             steps {
                 script {
-                    sh 'echo "Reading last version"'
-                    sh 'LAST_VERSION=$(<version_prod.txt)'
-                    sh 'VERSION=$((LAST_VERSION + 1))'
-                    sh 'VERSION_TAG="prod-v${VERSION}"'
-                    sh 'echo ${VERSION_TAG}'
+                    versionTag = readFile 'version_prod.txt'
+                }
+            }
+        }
+
+        stage('Output') {
+            steps {
+                script {
+                    echo versionTag
                 }
             }
         }
@@ -26,7 +30,7 @@ pipeline {
         stage('Verificar tools') {
             steps {
                 sh 'docker info'
-                sh 'echo ${VERSION_TAG}'
+                sh 'echo ${versionTag}'
             }
         }
 
