@@ -37,7 +37,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
+                    sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}"
                     sh 'docker push ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}'
                 }
             }
