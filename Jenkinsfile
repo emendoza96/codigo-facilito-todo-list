@@ -12,22 +12,19 @@ pipeline {
 
     stages {
         stage('Set Version Tag') {
-            when {
-                branch 'main'
-            }
             steps {
-                script {
-                    def versionFile = 'version_prod.txt'
-                    def version = readFile(versionFile).trim()
-                    VERSION = (version.toInteger() + 1).toString()
-                    VERSION_TAG = "prod-v${newVersion}"
-                }
+                sh 'echo "Reading last version"'
+                sh 'LAST_VERSION=$(<version_prod.txt)'
+                sh 'VERSION=$((LAST_VERSION + 1))'
+                sh 'VERSION_TAG="prod-v${VERSION}"'
+                sh 'echo ${VERSION_TAG}'
             }
         }
 
         stage('Verificar tools') {
             steps {
                 sh 'docker info'
+                sh 'echo ${VERSION_TAG}'
             }
         }
 
@@ -50,9 +47,6 @@ pipeline {
         }
 
         stage('Push prod to Docker Hub') {
-            when {
-                branch 'main'
-            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
@@ -60,17 +54,17 @@ pipeline {
                     sh 'docker push ${DOCKER_HUB_REPO}:${VERSION_TAG}'
                 }
 
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        git config user.email "emim7802@gmail.com"
-                        git config user.name "Emiliano Mendoza"
-                        echo "${VERSION}" > version_prod.txt
-                        git add version_prod.txt
-                        git commit -m "Update version prod"
-                        git push https://${GITHUB_TOKEN}@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main
-                    '''
-                    }
-                }
+                // withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                //     sh '''
+                //         git config user.email "emim7802@gmail.com"
+                //         git config user.name "Emiliano Mendoza"
+                //         echo "${VERSION}" > version_prod.txt
+                //         git add version_prod.txt
+                //         git commit -m "Update version prod"
+                //         git push https://${GITHUB_TOKEN}@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main
+                //     '''
+                // }
+            }
         }
     }
 
