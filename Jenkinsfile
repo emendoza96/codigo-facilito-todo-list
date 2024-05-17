@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_REPO = 'emendoza96/app-todo-list:v${BUILD_NUMBER}'
+        DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
         CONTAINER_NAME = 'app-todo-list'
     }
 
@@ -17,13 +17,13 @@ pipeline {
 
         stage('Build docker image') {
             steps {
-                sh 'docker build -t ${DOCKER_HUB_REPO} .'
+                sh 'docker build -t ${DOCKER_HUB_REPO}:v${BUILD_NUMBER} .'
             }
         }
 
         stage('Run docker image') {
             steps {
-                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}'
+                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}'
             }
         }
 
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    sh 'docker push ${DOCKER_HUB_REPO}'
+                    sh 'docker push ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}'
                 }
             }
         }
