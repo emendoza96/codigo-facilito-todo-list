@@ -17,6 +17,8 @@ pipeline {
                     versionTag = readFile 'version_prod.txt'
                     VERSION = versionTag.toInteger() + 1
                     VERSION_TAG = "prod-v${VERSION}"
+
+                    echo VERSION_TAG
                 }
             }
         }
@@ -57,6 +59,7 @@ pipeline {
                     sh '''
                         git config user.email "emim7802@gmail.com"
                         git config user.name "Emiliano Mendoza"
+                        VERSION=${VERSION}
                         echo "${VERSION}" > version_prod.txt
                         git add version_prod.txt
                         git commit -m "Update version prod"
