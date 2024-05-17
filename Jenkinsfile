@@ -12,6 +12,9 @@ pipeline {
 
     stages {
         stage('Set Version Tag') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     versionTag = readFile 'version_prod.txt'
