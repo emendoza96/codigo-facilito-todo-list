@@ -5,9 +5,9 @@ pipeline {
 
     environment {
         DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
-        CONTAINER_NAME = 'app-todo-list'
         VERSION_TAG = 'latest'
         VERSION = 'latest'
+        CONTAINER_ID = ''
     }
 
     stages {
@@ -53,17 +53,24 @@ pipeline {
 
         stage('Run docker image') {
             steps {
-                sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
+                script {
+                    CONTAINER_ID = sh(script: "docker run -dit ${DOCKER_HUB_REPO}", returnStdout: true).trim()
+                }
             }
         }
 
         stage('Run specs') {
             steps {
-                sh 'docker exec ${CONTAINER_NAME} sh -c "npm test"'
+                sh "docker exec ${CONTAINER_ID} sh -c \"npm test\""
             }
         }
 
         stage('Push prod to Docker Hub') {
+            when {
+                expression {
+                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                }
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
@@ -91,8 +98,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker stop ${CONTAINER_NAME}'
-            sh 'docker rm ${CONTAINER_NAME}'
+            sh "docker stop ${CONTAINER_ID}"
+            sh "docker rm ${CONTAINER_ID}"
             sh "docker rmi -f ${DOCKER_HUB_REPO}"
         }
     }
