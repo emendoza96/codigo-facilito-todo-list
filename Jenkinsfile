@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     versionTag = readFile 'version_prod.txt'
-                    newVersionTag = versionTag.toInteger() + 1
+                    newVersionTag = (versionTag.toInteger() + 1).toString()
                 }
             }
         }
