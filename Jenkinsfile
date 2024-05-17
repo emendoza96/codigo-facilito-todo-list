@@ -8,6 +8,7 @@ pipeline {
         CONTAINER_NAME = 'app-todo-list'
         VERSION_TAG = 'latest'
         VERSION = 'latest'
+        CONTAINER_ID = ''
     }
 
     stages {
@@ -54,12 +55,14 @@ pipeline {
         stage('Run docker image') {
             steps {
                 sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
+                CONTAINER_ID = sh(script: 'docker run -d my-image', returnStdout: true).trim()
             }
         }
 
         stage('Run specs') {
             steps {
                 sh 'docker exec ${CONTAINER_NAME} sh -c "npm test"'
+                sh "echo ${CONTAINER_ID}"
             }
         }
 
