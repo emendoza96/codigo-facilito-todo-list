@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Set prod version tag') {
+        stage('Set dev version tag') {
             when {
                 branch 'develop'
             }
