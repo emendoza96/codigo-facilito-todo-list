@@ -47,13 +47,13 @@ pipeline {
 
         stage('Build docker image') {
             steps {
-                sh 'docker build -t ${DOCKER_HUB_REPO} .'
+                sh "docker build -t ${DOCKER_HUB_REPO} ."
             }
         }
 
         stage('Run docker image') {
             steps {
-                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}'
+                sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
             }
         }
 
