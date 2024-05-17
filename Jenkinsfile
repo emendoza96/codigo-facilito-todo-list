@@ -20,21 +20,13 @@ pipeline {
             }
         }
 
-        stage('Output') {
-            steps {
-                script {
-                    echo VERSION_TAG
-                }
-            }
-        }
-
         stage('Verificar tools') {
             steps {
-                sh '''
+                script {
                     docker info
-                    VERSION_TAG=${VERSION_TAG}
-                    echo ${VERSION_TAG}
-                '''
+
+                    echo VERSION_TAG
+                }
             }
         }
 
