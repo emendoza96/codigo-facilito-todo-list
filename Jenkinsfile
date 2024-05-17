@@ -24,7 +24,7 @@ pipeline {
 
         stage('Run docker image') {
             steps {
-                sh 'docker run -dit --name ${DOCKER_HUB_REPO} ${CONTAINER_NAME}'
+                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}'
             }
         }
 
