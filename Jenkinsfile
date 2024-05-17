@@ -6,8 +6,8 @@ pipeline {
     environment {
         DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
         CONTAINER_NAME = 'app-todo-list'
-        VERSION_TAG = ''
-        VERSION = ''
+        VERSION_TAG = 'latest'
+        VERSION = 'latest'
     }
 
     stages {
