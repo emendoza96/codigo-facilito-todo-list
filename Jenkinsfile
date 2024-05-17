@@ -5,7 +5,6 @@ pipeline {
 
     environment {
         DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
-        CONTAINER_NAME = 'app-todo-list'
         VERSION_TAG = 'latest'
         VERSION = 'latest'
         CONTAINER_ID = ''
@@ -55,7 +54,6 @@ pipeline {
         stage('Run docker image') {
             steps {
                 script {
-                    sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
                     CONTAINER_ID = sh(script: "docker run -dit ${DOCKER_HUB_REPO}", returnStdout: true).trim()
                 }
             }
@@ -100,8 +98,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker stop ${CONTAINER_NAME}'
-            sh 'docker rm ${CONTAINER_NAME}'
+            sh "docker stop ${CONTAINER_ID}"
+            sh "docker rm ${CONTAINER_ID}"
             sh "docker rmi -f ${DOCKER_HUB_REPO}"
         }
     }
