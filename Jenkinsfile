@@ -13,13 +13,13 @@ pipeline {
     stages {
         stage('Set Version Tag') {
             steps {
-                sh '''
+                script {
                     echo "Reading last version"
                     LAST_VERSION=$(<version_prod.txt)
                     VERSION=$((LAST_VERSION + 1))
                     VERSION_TAG="prod-v${VERSION}"
                     echo ${VERSION_TAG}
-                '''
+                }
             }
         }
 
