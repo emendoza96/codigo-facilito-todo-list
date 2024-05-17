@@ -63,8 +63,7 @@ pipeline {
 
         stage('Run specs') {
             steps {
-                sh 'docker exec ${CONTAINER_NAME} sh -c "npm test"'
-                sh "echo ${CONTAINER_ID}"
+                sh "docker exec ${CONTAINER_ID} sh -c \"npm test\""
             }
         }
 
