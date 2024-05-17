@@ -24,6 +24,8 @@ pipeline {
             steps {
                 script {
                     sh 'docker info'
+                    sh 'echo VERSION_TAG'
+                    sh 'echo ${VERSION_TAG}'
 
                     echo VERSION_TAG
                 }
