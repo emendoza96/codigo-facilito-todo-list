@@ -65,7 +65,7 @@ pipeline {
             }
         }
 
-        stage('Push prod to Docker Hub') {
+        stage('Push to Docker Hub') {
             when {
                 expression {
                     return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
