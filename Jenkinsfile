@@ -23,7 +23,7 @@ pipeline {
         stage('Verificar tools') {
             steps {
                 script {
-                    docker info
+                    sh 'docker info'
 
                     echo VERSION_TAG
                 }
