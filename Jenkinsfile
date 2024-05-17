@@ -30,8 +30,11 @@ pipeline {
 
         stage('Verificar tools') {
             steps {
-                sh 'docker info'
-                sh 'echo ${VERSION_TAG}'
+                sh '''
+                    docker info
+                    VERSION_TAG=${VERSION_TAG}
+                    echo ${VERSION_TAG}
+                '''
             }
         }
 
