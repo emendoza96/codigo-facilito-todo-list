@@ -17,13 +17,13 @@ pipeline {
 
         stage('Build docker image') {
             steps {
-                sh 'docker build -t ${DOCKER_HUB_REPO}:v${BUILD_NUMBER} .'
+                sh 'docker build -t ${DOCKER_HUB_REPO} .'
             }
         }
 
         stage('Run docker image') {
             steps {
-                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}'
+                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}'
             }
         }
 
@@ -37,6 +37,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
                     sh 'docker push ${DOCKER_HUB_REPO}:v${BUILD_NUMBER}'
                 }
             }
