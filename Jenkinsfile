@@ -76,6 +76,9 @@ pipeline {
             when {
                 branch 'main'
             }
+                environment {
+                    EXAMPLE_CREDS = credentials('example-credentials-id')
+                }
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh 'git config user.email "emim7802@gmail.com"'
@@ -83,7 +86,7 @@ pipeline {
                     sh "echo ${VERSION} > version_prod.txt"
                     sh 'git add version_prod.txt'
                     sh 'git commit -m "Update version prod"'
-                    sh "git push https://${GITHUB_TOKEN}@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main"
+                    sh 'git push https://GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }
         }
