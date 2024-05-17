@@ -15,6 +15,7 @@ pipeline {
             steps {
                 script {
                     versionTag = readFile 'version_prod.txt'
+                    newVersionTag = versionTag + 1
                 }
             }
         }
@@ -22,7 +23,7 @@ pipeline {
         stage('Output') {
             steps {
                 script {
-                    echo versionTag
+                    echo newVersionTag
                 }
             }
         }
