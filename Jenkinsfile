@@ -56,15 +56,12 @@ pipeline {
                 // }
 
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        git config user.email "emim7802@gmail.com"
-                        git config user.name "Emiliano Mendoza"
-                        VERSION=${VERSION}
-                        echo "${VERSION}" > version_prod.txt
-                        git add version_prod.txt
-                        git commit -m "Update version prod"
-                        git push https://${GITHUB_TOKEN}@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main
-                    '''
+                    sh 'git config user.email "emim7802@gmail.com"'
+                    sh 'git config user.name "Emiliano Mendoza"'
+                    sh "echo ${VERSION} > version_prod.txt"
+                    sh 'git add version_prod.txt'
+                    sh 'git commit -m "Update version prod"'
+                    sh "git push https://${GITHUB_TOKEN}@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main"
                 }
             }
         }
