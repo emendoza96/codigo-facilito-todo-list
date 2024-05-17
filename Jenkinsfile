@@ -49,12 +49,16 @@ pipeline {
 
         stage('Push prod to Docker Hub') {
             steps {
-                // withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                //     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                //     sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:${VERSION_TAG}"
-                //     sh "docker push ${DOCKER_HUB_REPO}:${VERSION_TAG}"
-                // }
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:${VERSION_TAG}"
+                    sh "docker push ${DOCKER_HUB_REPO}:${VERSION_TAG}"
+                }
+            }
+        }
 
+        stage('Update version in repository') {
+            steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh 'git config user.email "emim7802@gmail.com"'
                     sh 'git config user.name "Emiliano Mendoza"'
