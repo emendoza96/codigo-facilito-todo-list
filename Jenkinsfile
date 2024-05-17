@@ -6,8 +6,8 @@ pipeline {
     environment {
         DOCKER_HUB_REPO = 'emendoza96/app-todo-list'
         CONTAINER_NAME = 'app-todo-list'
-        VERSION_TAG = ''
-        VERSION = ''
+        VERSION_TAG = 'latest'
+        VERSION = 'latest'
     }
 
     stages {
@@ -20,8 +20,8 @@ pipeline {
                     versionTag = readFile 'version_prod.txt'
                     VERSION = versionTag.trim().toInteger() + 1
                     VERSION_TAG = "prod-v${VERSION}"
-
-                    echo VERSION_TAG
+                    DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
+                    echo DOCKER_HUB_REPO
                 }
             }
         }
@@ -33,7 +33,8 @@ pipeline {
             steps {
                 script {
                     VERSION_TAG = "dev-v${BUILD_NUMBER}"
-                    echo VERSION_TAG
+                    DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
+                    echo DOCKER_HUB_REPO
                 }
             }
         }
@@ -46,13 +47,13 @@ pipeline {
 
         stage('Build docker image') {
             steps {
-                sh 'docker build -t ${DOCKER_HUB_REPO} .'
+                sh "docker build -t ${DOCKER_HUB_REPO} ."
             }
         }
 
         stage('Run docker image') {
             steps {
-                sh 'docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}'
+                sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
             }
         }
 
@@ -66,8 +67,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    sh "docker tag ${DOCKER_HUB_REPO} ${DOCKER_HUB_REPO}:${VERSION_TAG}"
-                    sh "docker push ${DOCKER_HUB_REPO}:${VERSION_TAG}"
+                    sh "docker push ${DOCKER_HUB_REPO}"
                 }
             }
         }
@@ -93,8 +93,7 @@ pipeline {
         always {
             sh 'docker stop ${CONTAINER_NAME}'
             sh 'docker rm ${CONTAINER_NAME}'
-            sh "docker rmi -f ${DOCKER_HUB_REPO}:latest"
-            sh "docker rmi -f ${DOCKER_HUB_REPO}:${VERSION_TAG}"
+            sh "docker rmi -f ${DOCKER_HUB_REPO}"
         }
     }
 }
