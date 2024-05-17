@@ -48,6 +48,8 @@ pipeline {
         always {
             sh 'docker stop ${CONTAINER_NAME}'
             sh 'docker rm ${CONTAINER_NAME}'
+            sh "docker rmi -f ${DOCKER_HUB_REPO}:latest"
+            sh "docker rmi -f ${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
         }
     }
 }
