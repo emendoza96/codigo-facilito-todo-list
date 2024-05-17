@@ -55,7 +55,7 @@ pipeline {
         stage('Run docker image') {
             steps {
                 sh "docker run -dit --name ${CONTAINER_NAME} ${DOCKER_HUB_REPO}"
-                CONTAINER_ID = sh(script: 'docker run -d my-image', returnStdout: true).trim()
+                CONTAINER_ID = sh(script: "docker run -dit ${DOCKER_HUB_REPO}", returnStdout: true).trim()
             }
         }
 
