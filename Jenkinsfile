@@ -92,7 +92,7 @@ pipeline {
                     sh 'git add version_prod.txt'
                     sh 'git add manifests/deployment-prod.yml'
                     sh 'git commit -m "Update version prod"'
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:develop'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }
         }
@@ -108,7 +108,7 @@ pipeline {
                     sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-dev.yml"
                     sh 'git add manifests/deployment-dev.yml'
                     sh 'git commit -m "Update version dev"'
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:develop'
                 }
             }
         }
