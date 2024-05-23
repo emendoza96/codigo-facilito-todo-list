@@ -79,7 +79,7 @@ pipeline {
             }
         }
 
-        stage('Update version in repository') {
+        stage('Update prod version in repository') {
             when {
                 branch 'main'
             }
@@ -88,8 +88,26 @@ pipeline {
                     sh 'git config user.email "emim7802@gmail.com"'
                     sh 'git config user.name "Emiliano Mendoza"'
                     sh "echo ${VERSION} > version_prod.txt"
+                    sh "sed -i 's/image: emendoza96\/app-todo-list:.*/image: emendoza96\/app-todo-list:${VERSION_TAG}/' manifests/deployment-prod.yml"
                     sh 'git add version_prod.txt'
+                    sh 'git add manifests/deployment-prod.txt'
                     sh 'git commit -m "Update version prod"'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
+                }
+            }
+        }
+
+        stage('Update dev version in repository') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                    sh 'git config user.email "emim7802@gmail.com"'
+                    sh 'git config user.name "Emiliano Mendoza"'
+                    sh "sed -i 's/image: emendoza96\/app-todo-list:.*/image: emendoza96\/app-todo-list:${VERSION_TAG}/' manifests/deployment-dev.yml"
+                    sh 'git add manifests/deployment-dev.txt'
+                    sh 'git commit -m "Update version dev"'
                     sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }

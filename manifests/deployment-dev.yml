@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list-app-dev
+  labels:
+    app: todo-list-app-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-list-app-dev
+  template:
+    metadata:
+      labels:
+        app: todo-list-app-dev
+        env: dev
+    spec:
+      containers:
+      - name: todo-list-app-dev
+        image: emendoza96/app-todo-list:replaceImageTag
+        ports:
+        - containerPort: 3000
