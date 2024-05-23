@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: todo-list-app-prod
-        image: emendoza96/app-todo-list:replaceImageTag
+        image: emendoza96/app-todo-list:prod-v14
         ports:
         - containerPort: 3000
