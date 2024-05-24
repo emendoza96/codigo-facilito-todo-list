@@ -108,7 +108,7 @@ pipeline {
                     sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-dev.yml"
                     sh 'git add manifests/deployment-dev.yml'
                     sh 'git commit -m "Update version dev"'
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:develop'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }
         }
