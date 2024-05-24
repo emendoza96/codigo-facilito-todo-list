@@ -112,6 +112,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to kubernetes') {
+            when {
+                branch 'main'
+            }
+            steps {
+                kubernetesDeploy (configs: 'deployment-prod.yml',kubeconfigId: 'k8sconfig')
+            }
+        }
     }
 
     post {
