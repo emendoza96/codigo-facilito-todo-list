@@ -120,7 +120,7 @@ pipeline {
             }
             steps {
                 sshagent(['ssh-key']) {
-                    sh "ssh ubuntu@${KUBERNETES_IP} ls"
+                    sh "ssh -tt -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} ls"
                 }
             }
         }
