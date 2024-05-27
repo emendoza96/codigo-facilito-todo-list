@@ -8,6 +8,7 @@ pipeline {
         VERSION_TAG = 'latest'
         VERSION = 'latest'
         CONTAINER_ID = ''
+        KUBERNETES_IP = '18.209.65.146'
     }
 
     stages {
@@ -118,7 +119,9 @@ pipeline {
                 branch 'main'
             }
             steps {
-                kubernetesDeploy (configs: 'deployment-prod.yml',kubeconfigId: 'k8sconfig')
+                sshagent(['ssh-key']) {
+                    sh "ssh ubuntu@${KUBERNETES_IP} ls"
+                }
             }
         }
     }
