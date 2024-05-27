@@ -8,7 +8,7 @@ pipeline {
         VERSION_TAG = 'latest'
         VERSION = 'latest'
         CONTAINER_ID = ''
-        KUBERNETES_IP = '18.209.65.146'
+        KUBERNETES_IP = '44.220.152.65'
     }
 
     stages {
@@ -121,7 +121,14 @@ pipeline {
             steps {
                 sshagent(['ssh-key']) {
                     sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} kubectl apply -f deployment-prod.yml"
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} << 'EOF'
+                        eval $(minikube -p minikube docker-env)
+                        docker image prune -a -f
+                        kubectl apply -f deployment-prod.yml
+                        kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 &
+                        EOF
+                    """
                 }
             }
         }
