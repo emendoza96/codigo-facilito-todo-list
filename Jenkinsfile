@@ -120,8 +120,8 @@ pipeline {
             }
             steps {
                 sshagent(['ssh-key']) {
-                    sh "scp -o StrictHostKeyChecking=no manifest.yml manifests/deployment-prod.yml ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
-                    sh "shh -o ubuntu@${KUBERNETES_IP} kubectl apply -f manifest.yml"
+                    sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
+                    sh "shh -o ubuntu@${KUBERNETES_IP} ls"
                 }
             }
         }
