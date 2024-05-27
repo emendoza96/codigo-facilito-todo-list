@@ -124,7 +124,7 @@ pipeline {
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
                     sleep 5
-                    kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 &
+                    kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 > /dev/null 2>&1 &
                     ' > run_manifest.sh
                 """
 
