@@ -8,7 +8,7 @@ pipeline {
         VERSION_TAG = 'latest'
         VERSION = 'latest'
         CONTAINER_ID = ''
-        KUBERNETES_IP = '44.220.152.65'
+        KUBERNETES_IP = credentials('SERVER_IP')
         ENV = ''
     }
 
