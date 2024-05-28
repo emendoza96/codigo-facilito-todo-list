@@ -35,7 +35,9 @@ pipeline {
             steps {
                 script {
                     ENV = "dev"
-                    VERSION_TAG = "${ENV}-v${BUILD_NUMBER}"
+                    versionTag = readFile 'version_dev.txt'
+                    VERSION = versionTag.trim().toInteger() + 1
+                    VERSION_TAG = "${ENV}-v${VERSION}"
                     DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
                 }
             }
