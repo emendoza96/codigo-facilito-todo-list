@@ -16,14 +16,24 @@ const {
 let pool;
 
 async function init() {
-    const host = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
+    const host0 = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
     const user = USER_FILE ? fs.readFileSync(USER_FILE) : USER;
     const password = PASSWORD_FILE ? fs.readFileSync(PASSWORD_FILE) : PASSWORD;
     const database = DB_FILE ? fs.readFileSync(DB_FILE) : DB;
 
-    await waitPort({ 
-        host, 
-        port: 3306,
+    let host, port;
+    if (host0.includes(':')) {
+        const [hostPart, portPart] = host0.split(':');
+        host = hostPart;
+        port = parseInt(portPart)
+    } else {
+        host = host0;
+        port = 3306;
+    }
+
+    await waitPort({
+        host,
+        port,
         timeout: 10000,
         waitForDns: true,
     });
