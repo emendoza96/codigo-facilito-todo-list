@@ -121,12 +121,10 @@ pipeline {
                     echo 'eval \$(minikube -p minikube docker-env)
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
-
                     AUX_PID=\$(lsof -t -i :3000)
                     if [ -n "\$AUX_PID" ]; then
                         sudo kill \$AUX_PID
-                    if
-
+                    fi
                     sleep 40
                     ' > run_manifest.sh
                 """
