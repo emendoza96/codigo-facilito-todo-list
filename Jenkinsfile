@@ -71,8 +71,9 @@ pipeline {
 
         stage('Push to Docker Hub') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
                 }
             }
             steps {
@@ -85,8 +86,9 @@ pipeline {
 
         stage('Update version in repository') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
                 }
             }
             steps {
@@ -98,8 +100,7 @@ pipeline {
                     sh "git add version_${ENV}.txt"
                     sh "git add manifests/deployment-${ENV}.yml"
                     sh "git commit -m 'Update version ${ENV}'"
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:develop'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:$BRANCH_NAME'
                 }
             }
         }
