@@ -111,8 +111,8 @@ pipeline {
             }
             steps {
                 sshagent(['ssh-key']) {
-                    sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml deploy_minikube.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'bash /home/ubuntu/deploy_minikube.sh'"
+                    sh 'scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml deploy_minikube.sh ubuntu@$KUBERNETES_IP:/home/ubuntu/'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@$KUBERNETES_IP "bash /home/ubuntu/deploy_minikube.sh"'
                 }
             }
         }
