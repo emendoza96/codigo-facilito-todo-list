@@ -93,9 +93,9 @@ pipeline {
                     sh 'git config user.name "Emiliano Mendoza"'
                     sh "echo ${VERSION} > version_${ENV}.txt"
                     sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-${ENV}.yml"
-                    sh 'git add version_${ENV}.txt'
-                    sh 'git add manifests/deployment-${ENV}.yml'
-                    sh 'git commit -m "Update version ${ENV}"'
+                    sh "git add version_${ENV}.txt"
+                    sh "git add manifests/deployment-${ENV}.yml"
+                    sh "git commit -m 'Update version ${ENV}'"
                     sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }
