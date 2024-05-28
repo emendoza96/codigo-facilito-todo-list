@@ -123,7 +123,7 @@ pipeline {
                     kubectl apply -f deployment-prod.yml
 
                     AUX_PID=\$(lsof -t -i :3000)
-                    if [ -n \$AUX_PID ]; then
+                    if [ -n "\$AUX_PID" ]; then
                         sudo kill \$AUX_PID
                     if
 
