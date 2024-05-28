@@ -121,12 +121,13 @@ pipeline {
                     echo 'eval \$(minikube -p minikube docker-env)
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
-                    sleep 30
+                    kubectl apply -f service.yml
+                    sleep 10
                     ' > run_manifest.sh
                 """
 
                 sshagent(['ssh-key']) {
-                    sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml run_manifest.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
+                    sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml manifests/service.yml run_manifest.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
                     sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'bash /home/ubuntu/run_manifest.sh'"
                     sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'nohup kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 > /dev/null 2>&1 &'"
 
