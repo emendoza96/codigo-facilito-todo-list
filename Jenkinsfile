@@ -22,7 +22,6 @@ pipeline {
                     VERSION = versionTag.trim().toInteger() + 1
                     VERSION_TAG = "prod-v${VERSION}"
                     DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
-                    echo DOCKER_HUB_REPO
                 }
             }
         }
@@ -35,7 +34,6 @@ pipeline {
                 script {
                     VERSION_TAG = "dev-v${BUILD_NUMBER}"
                     DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
-                    echo DOCKER_HUB_REPO
                 }
             }
         }
@@ -123,7 +121,7 @@ pipeline {
                     echo 'eval \$(minikube -p minikube docker-env)
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
-                    sleep 20
+                    sleep 10
                     ' > run_manifest.sh
                 """
 
