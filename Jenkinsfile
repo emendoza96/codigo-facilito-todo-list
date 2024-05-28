@@ -121,7 +121,7 @@ pipeline {
                     echo 'eval \$(minikube -p minikube docker-env)
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
-                    sleep 10
+                    sleep 30
                     ' > run_manifest.sh
                 """
 
