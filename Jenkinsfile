@@ -99,6 +99,7 @@ pipeline {
                     sh "git add manifests/deployment-${ENV}.yml"
                     sh "git commit -m 'Update version ${ENV}'"
                     sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
+                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:develop'
                 }
             }
         }
