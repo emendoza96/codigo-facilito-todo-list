@@ -124,13 +124,14 @@ pipeline {
                     docker image prune -a -f
                     kubectl apply -f deployment-prod.yml
                     sleep 20
-                    nohup kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 > /dev/null 2>&1 &
                     ' > run_manifest.sh
                 """
 
                 sshagent(['ssh-key']) {
                     sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml run_manifest.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
                     sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'bash /home/ubuntu/run_manifest.sh'"
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'nohup kubectl port-forward svc/todo-list-service 3000:3000 --address 0.0.0.0 > /dev/null 2>&1 &'"
+
                 }
             }
         }
