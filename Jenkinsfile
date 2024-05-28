@@ -71,8 +71,9 @@ pipeline {
 
         stage('Push to Docker Hub') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
                 }
             }
             steps {
@@ -85,8 +86,9 @@ pipeline {
 
         stage('Update version in repository') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
                 }
             }
             steps {
