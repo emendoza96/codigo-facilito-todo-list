@@ -9,6 +9,7 @@ pipeline {
         VERSION = 'latest'
         CONTAINER_ID = ''
         KUBERNETES_IP = '44.220.152.65'
+        ENV = ''
     }
 
     stages {
@@ -18,9 +19,10 @@ pipeline {
             }
             steps {
                 script {
+                    ENV = "prod"
                     versionTag = readFile 'version_prod.txt'
                     VERSION = versionTag.trim().toInteger() + 1
-                    VERSION_TAG = "prod-v${VERSION}"
+                    VERSION_TAG = "${ENV}-v${VERSION}"
                     DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
                 }
             }
@@ -32,7 +34,8 @@ pipeline {
             }
             steps {
                 script {
-                    VERSION_TAG = "dev-v${BUILD_NUMBER}"
+                    ENV = "dev"
+                    VERSION_TAG = "${ENV}-v${BUILD_NUMBER}"
                     DOCKER_HUB_REPO = "${DOCKER_HUB_REPO}:${VERSION_TAG}"
                 }
             }
@@ -78,51 +81,53 @@ pipeline {
             }
         }
 
-        stage('Update prod version in repository') {
+        stage('Update version in repository') {
             when {
-                branch 'main'
+                expression {
+                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'develop'
+                }
             }
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh 'git config user.email "emim7802@gmail.com"'
                     sh 'git config user.name "Emiliano Mendoza"'
-                    sh "echo ${VERSION} > version_prod.txt"
-                    sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-prod.yml"
-                    sh 'git add version_prod.txt'
-                    sh 'git add manifests/deployment-prod.yml'
-                    sh 'git commit -m "Update version prod"'
+                    sh "echo ${VERSION} > version_${ENV}.txt"
+                    sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-${ENV}.yml"
+                    sh 'git add version_${ENV}.txt'
+                    sh 'git add manifests/deployment-${ENV}.yml'
+                    sh 'git commit -m "Update version ${ENV}"'
                     sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
                 }
             }
         }
 
-        stage('Update dev version in repository') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                    sh 'git config user.email "emim7802@gmail.com"'
-                    sh 'git config user.name "Emiliano Mendoza"'
-                    sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-dev.yml"
-                    sh 'git add manifests/deployment-dev.yml'
-                    sh 'git commit -m "Update version dev"'
-                    sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
-                }
-            }
-        }
+        // stage('Update dev version in repository') {
+        //     when {
+        //         branch 'develop'
+        //     }
+        //     steps {
+        //         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+        //             sh 'git config user.email "emim7802@gmail.com"'
+        //             sh 'git config user.name "Emiliano Mendoza"'
+        //             sh "sed -i \"s/image: emendoza96\\/app-todo-list:.*/image: emendoza96\\/app-todo-list:${VERSION_TAG}/\" manifests/deployment-dev.yml"
+        //             sh 'git add manifests/deployment-dev.yml'
+        //             sh 'git commit -m "Update version dev"'
+        //             sh 'git push https://$GITHUB_TOKEN@github.com/emendoza96/codigo-facilito-todo-list.git HEAD:main'
+        //         }
+        //     }
+        // }
 
-        stage('Deploy to kubernetes') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sshagent(['ssh-key']) {
-                    sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml deploy_minikube.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'bash /home/ubuntu/deploy_minikube.sh'"
-                }
-            }
-        }
+        // stage('Deploy to kubernetes') {
+        //     when {
+        //         branch 'main'
+        //     }
+        //     steps {
+        //         sshagent(['ssh-key']) {
+        //             sh "scp -o StrictHostKeyChecking=no manifests/deployment-prod.yml deploy_minikube.sh ubuntu@${KUBERNETES_IP}:/home/ubuntu/"
+        //             sh "ssh -o StrictHostKeyChecking=no ubuntu@${KUBERNETES_IP} 'bash /home/ubuntu/deploy_minikube.sh'"
+        //         }
+        //     }
+        // }
     }
 
     post {
