@@ -91,6 +91,22 @@ resource "aws_security_group" "webserver_security_group" {
   }
 
   ingress {
+    description = "prometheus"
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "grafana"
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "mysql/aurora access"
     from_port   = 3306
     to_port     = 3306
