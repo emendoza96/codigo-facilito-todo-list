@@ -2,9 +2,21 @@ data "aws_key_pair" "key" {
   key_name = var.key_name
 }
 
+resource "aws_instance" "jenkins" {
+
+  ami                         = var.ec2_ami
+  instance_type               = var.minikube_instance_type
+  key_name                    = data.aws_key_pair.key.key_name
+  subnet_id                   = aws_subnet.public_subnet_az1.id
+  security_groups             = [aws_security_group.webserver_security_group.id]
+  associate_public_ip_address = true
+
+  user_data                   = file("install_jenkins.sh")
+}
+
 resource "aws_instance" "minikube" {
 
-  ami                         = var.minikube_ec2_ami
+  ami                         = var.ec2_ami
   instance_type               = var.minikube_instance_type
   key_name                    = data.aws_key_pair.key.key_name
   subnet_id                   = aws_subnet.public_subnet_az1.id
@@ -19,6 +31,13 @@ resource "aws_instance" "minikube" {
     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
     curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
     apt install conntrack
+
+    # Cambiarmos la particion en donde se guardan las imagenes
+    mkdir /dev/shm/minikube-images
+    systemctl stop docker
+    mv /var/lib/docker /dev/shm/minikube-images/docker
+    ln -s /dev/shm/minikube-images/docker /var/lib/docker
+    systemctl start docker
     su - ubuntu
 
     cat <<EOT > /home/ubuntu/secrets.yml
@@ -50,7 +69,6 @@ resource "aws_instance" "minikube" {
     kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
     EOT
 
-    sudo chmod +x install_prometheus_and_grafana.sh
   EOF
 
   tags = {

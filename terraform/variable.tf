@@ -20,10 +20,15 @@ variable "key_name" {
 
 variable "minikube_instance_type" {
   type    = string
+  default = "t2.xlarge"
+}
+
+variable "jenkins_instance_type" {
+  type    = string
   default = "t2.large"
 }
 
-variable "minikube_ec2_ami" {
+variable "ec2_ami" {
   type    = string
   default = "ami-04b70fa74e45c3917"
 }
