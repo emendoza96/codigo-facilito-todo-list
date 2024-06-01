@@ -5,7 +5,7 @@ metadata:
   labels:
     app: todo-list-app-prod
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: todo-list-app-prod
@@ -14,10 +14,14 @@ spec:
       labels:
         app: todo-list-app-prod
         env: prod
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "3000"
     spec:
       containers:
       - name: todo-list-app-prod
-        image: emendoza96/app-todo-list:prod-v49
+        image: emendoza96/app-todo-list:prod-v55
         ports:
         - containerPort: 3000
         env:
