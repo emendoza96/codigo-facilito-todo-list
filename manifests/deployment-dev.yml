@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: todo-list-app-dev
-        image: emendoza96/app-todo-list:dev-v25
+        image: emendoza96/app-todo-list:dev-v26
         ports:
         - containerPort: 3000
         env:
