@@ -32,7 +32,7 @@ resource "aws_instance" "minikube" {
     curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
     apt install conntrack
 
-    # Cambiarmos la particion en donde se guardan las imagenes
+    # Cambiamos la particion en donde se guardan las imagenes
     mkdir /dev/shm/minikube-images
     systemctl stop docker
     mv /var/lib/docker /dev/shm/minikube-images/docker
